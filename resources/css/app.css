@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+@theme {
+    --color-brand-50: #fdf6f0;
+    --color-brand-100: #f6e7d7;
+    --color-brand-200: #f2d6b3;
+    --color-brand-300: #e8c29a;
+    --color-brand-400: #d9a36f;
+    --color-brand-500: #c98a4a;
+    --color-brand-600: #b87333;
+    --color-brand-700: #8a5222;
+    --color-brand-800: #6e401b;
+    --color-brand-900: #4a2b12;
+}
+
+@layer base {
+    body {
+        font-family: 'Instrument Sans', sans-serif;
+    }
+}
+
+@layer components {
+
+    .form-label {
+        @apply block text-sm font-semibold text-brand-900 mb-2;
+    }
+
+    .form-input {
+        @apply w-full rounded-2xl border border-brand-200 bg-white px-4 py-3 text-slate-900 outline-none transition duration-200 focus:border-brand-500 focus:ring-4 focus:ring-brand-100;
+    }
+
+    .btn {
+        @apply inline-flex items-center justify-center rounded-2xl px-5 py-3 font-semibold transition duration-200;
+    }
+
+    .btn-primary {
+        @apply bg-brand-600 text-white hover:bg-brand-700;
+    }
+
+}
