@@ -5,47 +5,65 @@
 
 @section('content')
 
-<div class="max-w-2xl">
-    <div class="mb-6">
-        <h1 class="text-2xl lg:text-3xl font-bold text-gray-800">Add Inventory Item</h1>
-        <p class="text-sm text-gray-500 mt-1">Create a new inventory record</p>
-    </div>
+<div class="max-w-2xl mx-auto">
 
-    <x-card>
-        <div class="p-6 border-b">
-            <h2 class="font-bold text-gray-800">Item Details</h2>
+    <x-card class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+
+        <div class="p-6 border-b border-slate-100">
+            <h2 class="font-bold text-slate-800">Item Details</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Register and allocate a new item resource into the system inventory</p>
         </div>
 
         <div class="p-6">
-            <form action="{{ route('items.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+            <form action="{{ route('items.store') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
                 @csrf
 
-                <x-form-input name="item_code" label="Item Code" />
-                <x-form-input name="name" label="Name" />
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
-                <div>
-                    <label class="form-label">Category</label>
-                    <select name="category_id" class="form-input">
-                        <option value="">-- Select --</option>
-                        @foreach($categories as $cat)
-                            <option value="{{ $cat->id }}">{{ $cat->name }}</option>
-                        @endforeach
-                    </select>
+                    <div>
+                        <x-form-input name="item_code" label="Item Code" placeholder="e.g., EQ-2026-001" />
+                    </div>
+
+                    <div>
+                        <x-form-input name="quantity" label="Quantity" type="number" placeholder="0" />
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <x-form-input name="name" label="Item Name" placeholder="e.g., Extension Cord, Projector" />
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Category</label>
+                        <select name="category_id" class="w-full text-sm rounded-xl border-gray-200 focus:border-emerald-400 focus:ring focus:ring-emerald-100 text-slate-700 transition">
+                            <option value="">-- Select Category --</option>
+                            @foreach($categories as $cat)
+                                <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Item Display Image</label>
+                        <div class="w-full">
+                            <input type="file" name="image" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 file:transition file:cursor-pointer cursor-pointer border border-gray-200 rounded-xl p-1" />
+                            <p class="text-[11px] text-gray-400 mt-1.5">Accepted image formats: PNG, JPG, JPEG. Max structural cap: 2MB.</p>
+                        </div>
+                    </div>
+
                 </div>
 
-                <x-form-input name="quantity" label="Quantity" type="number" />
+                <div class="flex items-center gap-3 pt-4 border-t border-slate-50">
+                    <x-button type="submit" class="inline-flex items-center justify-center bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2.5 rounded-xl font-semibold text-sm transition shadow-sm cursor-pointer">
+                        Save Item
+                    </x-button>
 
-                <div>
-                    <label class="form-label">Image</label>
-                    <input type="file" name="image" class="form-input" />
-                </div>
-
-                <div class="flex items-center gap-3 pt-2">
-                    <x-button type="submit" class="btn-primary">Save</x-button>
-                    <a href="{{ route('items.index') }}" class="btn">Cancel</a>
+                    <a href="{{ route('items.index') }}" class="inline-flex items-center justify-center bg-slate-100 hover:bg-slate-200 text-slate-700 px-5 py-2.5 rounded-xl font-semibold text-sm transition text-center">
+                        Cancel
+                    </a>
                 </div>
             </form>
         </div>
+
     </x-card>
 </div>
 
