@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -19,11 +19,8 @@
 
                 <div class="mb-8 text-center">
 
-                    <img
-                        src="{{ asset('img/logo.png') }}"
-                        alt="Barangay Logo"
-                        class="mx-auto h-24 w-24 object-contain"
-                    >
+                   <img src="{{ Vite::asset('resources/img/logo.png') }}" alt="Barangay Logo"
+                    class="mx-auto h-24 w-24 object-contain drop-shadow-md">
 
                     <h1 class="mt-5 text-3xl font-black text-brand-900">
                         Forgot Password

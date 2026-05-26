@@ -11,7 +11,6 @@
 
         <div class="p-6 border-b border-slate-100">
             <h2 class="font-bold text-slate-800">Transaction Details</h2>
-            <p class="text-xs text-slate-500 mt-0.5">Record a new equipment or item lending transaction</p>
         </div>
 
         <div class="p-6">
@@ -25,11 +24,14 @@
                         <select name="borrower_id" class="w-full text-sm rounded-xl border-gray-200 focus:border-emerald-400 focus:ring focus:ring-emerald-100 text-slate-700 transition">
                             <option value="">Select borrower</option>
                             @foreach($borrowers as $borrower)
-                                <option value="{{ $borrower->id }}">
-                                    {{ $borrower->lastname }}, {{ $borrower->firstname }} — ({{ $borrower->purok }})
+                                <option value="{{ $borrower->id }}" {{ old('borrower_id') == $borrower->id ? 'selected' : '' }}>
+                                    {{ $borrower->lastname }}, {{ $borrower->firstname }} — (€{{ $borrower->purok }})
                                 </option>
                             @endforeach
                         </select>
+                        @error('borrower_id')
+                            <p class="mt-1 text-xs text-red-500 font-medium">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div class="md:col-span-2">
@@ -37,20 +39,34 @@
                         <select name="inventory_item_id" class="w-full text-sm rounded-xl border-gray-200 focus:border-emerald-400 focus:ring focus:ring-emerald-100 text-slate-700 transition">
                             <option value="">Select inventory item</option>
                             @foreach($items as $item)
-                                <option value="{{ $item->id }}">
+                                <option value="{{ $item->id }}" {{ old('inventory_item_id') == $item->id ? 'selected' : '' }}>
                                     {{ $item->item_code }} - {{ $item->name }} ({{ $item->available }} available)
                                 </option>
                             @endforeach
                         </select>
+                        @error('inventory_item_id')
+                            <p class="mt-1 text-xs text-red-500 font-medium">{{ $message }}</p>
+                        @enderror
                     </div>
 
-                    <div>
-                        <x-form-input name="quantity" label="Quantity" type="number" />
+                    <div class="md:col-span-2 sm:col-span-1">
+                        <x-form-input name="quantity" label="Quantity" type="number" min="1" value="{{ old('quantity', 1) }}" />
+                        @error('quantity')
+                            <p class="mt-1 text-xs text-red-500 font-medium">{{ $message }}</p>
+                        @enderror
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-2">Due Date</label>
-                        <input type="date" name="due_at" class="w-full text-sm rounded-xl border-gray-200 focus:border-emerald-400 focus:ring focus:ring-emerald-100 text-slate-600 transition" />
+                    {{-- SYSTEM NOTICE: IPINALIT SA DUE DATE INPUT FIELD --}}
+                    <div class="md:col-span-2">
+                        <div class="bg-blue-50 border border-blue-100 text-blue-800 p-4 rounded-xl flex items-start gap-3">
+                            <div class="text-blue-500 mt-0.5">
+                                <i class="ti ti-info-circle text-xl"></i>
+                            </div>
+                            <div class="text-sm">
+                                <span class="font-bold block mb-0.5">Automated 7-Day Lending Period</span>
+                                Ang Date Borrowed ay awtomatikong itatala sa araw na ito. Ang borrower ay bibigyan ng eksaktong <strong>7 araw na palugit</strong> para maisoli ang hiniram na gamit.
+                            </div>
+                        </div>
                     </div>
 
                 </div>

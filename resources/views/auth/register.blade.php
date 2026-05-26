@@ -18,14 +18,14 @@
             {{-- REGISTER CARD --}}
             <div class="rounded-[32px] border border-brand-200 bg-white p-8 shadow-card">
 
-                {{-- HEADER --}}
+                {{-- HEADER WITH STABLE LOGO FRAME --}}
                 <div class="mb-8 text-center">
 
-                    <img
-                        src="{{ asset('img/logo.png') }}"
-                        alt="Barangay Logo"
-                        class="mx-auto h-24 w-24 object-contain"
-                    >
+                    <div class="flex h-24 w-24 mx-auto items-center justify-center rounded-2xl bg-white p-1.5 shadow-sm border border-slate-100">
+                        <img src="{{ Vite::asset('resources/img/logo.png') }}"
+                             alt="Barangay Logo"
+                             class="h-full w-full object-contain drop-shadow-sm">
+                    </div>
 
                     <h1 class="mt-5 text-3xl font-black text-brand-900">
                         Create Account
@@ -60,7 +60,7 @@
 
                     @csrf
 
-                    {{-- NAME --}}
+                    {{-- NAME GRIDS --}}
                     <div class="grid gap-4 sm:grid-cols-2">
 
                         <div>
@@ -72,6 +72,7 @@
                                 type="text"
                                 id="firstname"
                                 name="firstname"
+                                value="{{ old('firstname') }}"
                                 required
                                 placeholder="Enter first name"
                                 class="form-input"
@@ -87,6 +88,7 @@
                                 type="text"
                                 id="lastname"
                                 name="lastname"
+                                value="{{ old('lastname') }}"
                                 required
                                 placeholder="Enter last name"
                                 class="form-input"
@@ -95,27 +97,25 @@
 
                     </div>
 
-                    {{-- EMAIL --}}
+                    {{-- EMAIL ADDRESS --}}
                     <div>
-
                         <label for="email" class="form-label">
                             Email Address
                         </label>
 
                         <input
-                            type="email"
+                            type="html"
                             id="email"
                             name="email"
+                            value="{{ old('email') }}"
                             required
                             placeholder="Enter your email"
                             class="form-input"
                         >
-
                     </div>
 
-                    {{-- PASSWORD --}}
+                    {{-- PASSWORD ENTRY --}}
                     <div>
-
                         <label for="password" class="form-label">
                             Password
                         </label>
@@ -128,13 +128,28 @@
                             placeholder="Enter your password"
                             class="form-input"
                         >
-
                     </div>
 
-                    {{-- BUTTON --}}
+                    {{-- CONFIRM PASSWORD (SOLVES CONFIRMATION MISMATCH) --}}
+                    <div>
+                        <label for="password_confirmation" class="form-label">
+                            Confirm Password
+                        </label>
+
+                        <input
+                            type="password"
+                            id="password_confirmation"
+                            name="password_confirmation"
+                            required
+                            placeholder="Repeat your password"
+                            class="form-input"
+                        >
+                    </div>
+
+                    {{-- SUBMIT BUTTON --}}
                     <button
                         type="submit"
-                        class="btn btn-primary w-full"
+                        class="btn btn-primary w-full mt-2"
                     >
                         Register
                     </button>
@@ -143,18 +158,15 @@
 
             </div>
 
-            {{-- FOOTER --}}
+            {{-- FORM FOOTER LINK FRAME --}}
             <p class="mt-6 text-center text-sm text-slate-700">
-
                 Already have an account?
-
                 <a
                     href="/login"
                     class="font-semibold text-brand-700 hover:text-brand-900"
                 >
                     Login
                 </a>
-
             </p>
 
         </div>

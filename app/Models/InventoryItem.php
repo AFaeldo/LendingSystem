@@ -9,7 +9,25 @@ class InventoryItem extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['item_code','name','category_id','description','quantity','available','condition','status','image_path'];
+    protected $fillable = [
+        'item_code',
+        'name',
+        'category_id',
+        'description',
+        'quantity',
+        'available',
+        'condition',
+        'status',
+        'image_path',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'quantity' => 'integer',
+            'available' => 'integer',
+        ];
+    }
 
     public function category()
     {

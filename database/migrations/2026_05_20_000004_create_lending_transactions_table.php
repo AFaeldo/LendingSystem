@@ -15,9 +15,14 @@ return new class extends Migration
             $table->integer('quantity')->default(1);
             $table->date('borrowed_at')->nullable();
             $table->date('due_at')->nullable();
-            $table->enum('status', ['active','returned','overdue','cancelled'])->default('active');
+            $table->enum('status', ['active', 'returned', 'overdue', 'cancelled'])->default('active');
             $table->foreignId('processed_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
+
+            $table->index('borrower_id');
+            $table->index('inventory_item_id');
+            $table->index('status');
+            $table->index('due_at');
         });
     }
 

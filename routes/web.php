@@ -8,6 +8,7 @@ use App\Http\Controllers\InventoryItemController;
 use App\Http\Controllers\LendingController;
 use App\Http\Controllers\ReturnController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\CategoryController; // Naka-import na ng tama rito
 
 /*
 |--------------------------------------------------------------------------
@@ -44,7 +45,6 @@ Route::middleware('auth')->group(function () {
     | DASHBOARD
     |--------------------------------------------------------------------------
     */
-
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 
@@ -53,6 +53,9 @@ Route::middleware('auth')->group(function () {
     | LENDING MODULE
     |--------------------------------------------------------------------------
     */
+    Route::get('lendings/archive-vault', [LendingController::class, 'archiveIndex'])->name('lendings.archive.index');
+    Route::put('lendings/{lending}/archive', [LendingController::class, 'archive'])->name('lendings.archive-item');
+    Route::put('lendings/{lending}/restore', [LendingController::class, 'restore'])->name('lendings.restore-item');
 
     Route::resource('lendings', LendingController::class);
 
@@ -62,7 +65,6 @@ Route::middleware('auth')->group(function () {
     | RETURNS MODULE
     |--------------------------------------------------------------------------
     */
-
     Route::resource('returns', ReturnController::class)->only(['index','create','store','show']);
 
 
@@ -71,8 +73,14 @@ Route::middleware('auth')->group(function () {
     | INVENTORY / ITEMS MODULE
     |--------------------------------------------------------------------------
     */
+    Route::get('items/archive-vault', [InventoryItemController::class, 'archiveIndex'])->name('items.archive');
+    Route::put('items/{item}/archive', [InventoryItemController::class, 'archive'])->name('items.archive-item');
+    Route::put('items/{item}/restore', [InventoryItemController::class, 'restore'])->name('items.restore-item');
 
     Route::resource('items', InventoryItemController::class);
+
+    // ETO ANG BULID-IN ROUTE COMPONENT NA KAILANGAN NG MODAL MO:
+    Route::resource('categories', CategoryController::class);
 
 
     /*
@@ -80,6 +88,9 @@ Route::middleware('auth')->group(function () {
     | BORROWERS MODULE
     |--------------------------------------------------------------------------
     */
+    Route::get('borrowers/archive-vault', [BorrowerController::class, 'archiveIndex'])->name('borrowers.archive.index');
+    Route::patch('borrowers/{borrower}/archive', [BorrowerController::class, 'archive'])->name('borrowers.archive');
+    Route::patch('borrowers/{borrower}/restore', [BorrowerController::class, 'restore'])->name('borrowers.restore');
 
     Route::resource('borrowers', BorrowerController::class);
 
@@ -89,7 +100,6 @@ Route::middleware('auth')->group(function () {
     | REPORTS MODULE
     |--------------------------------------------------------------------------
     */
-
     Route::resource('reports', ReportController::class)->only(['index','show']);
 
 });

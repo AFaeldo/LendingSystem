@@ -27,19 +27,21 @@
                   flex flex-col shadow-xl">
 
         <div class="p-5 border-b border-white/30">
-            <div class="flex items-center gap-3">
+    <div class="flex items-center gap-3">
 
-                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-600 text-white shadow">
-                    <i class="ti ti-building-community text-xl"></i>
-                </div>
-
-                <div>
-                    <h1 class="text-lg font-bold text-brand-900 tracking-tight">LendSysTracker</h1>
-                    <p class="text-xs text-slate-500 font-medium">Barangay San Antonio</p>
-                </div>
-
-            </div>
+        <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white p-1 shadow-sm border border-slate-100">
+            <img src="{{ Vite::asset('resources/img/logo.png') }}"
+                 alt="Barangay Logo"
+                 class="h-full w-full object-contain drop-shadow-sm">
         </div>
+
+        <div>
+            <h1 class="text-lg font-bold text-brand-900 tracking-tight">LendSysTracker</h1>
+            <p class="text-xs text-slate-500 font-medium">Barangay San Antonio</p>
+        </div>
+
+    </div>
+</div>
 
         <nav class="flex-1 p-4 space-y-1.5 overflow-y-auto">
 
@@ -53,28 +55,28 @@
                 <i class="ti ti-layout-dashboard text-lg"></i> Dashboard
             </a>
 
+            <a href="{{ url('/borrowers') }}"
+               class="flex items-center gap-3 px-4 py-3 rounded-xl transition text-slate-600 hover:bg-white/60 hover:text-slate-900
+               {{ request()->is('borrowers*') ? $active : '' }}">
+                <i class="ti ti-users text-lg"></i> Borrowers
+            </a>
+
             <a href="{{ url('/lendings') }}"
                class="flex items-center gap-3 px-4 py-3 rounded-xl transition text-slate-600 hover:bg-white/60 hover:text-slate-900
                {{ request()->is('lendings*') ? $active : '' }}">
                 <i class="ti ti-clipboard-list text-lg"></i> Lending
             </a>
 
+            <a href="{{ route('items.index') }}"
+               class="flex items-center gap-3 px-4 py-3 rounded-xl transition text-slate-600 hover:bg-white/60 hover:text-slate-900
+               {{ request()->is('items*') ? $active : '' }}">
+                <i class="ti ti-box text-lg"></i> Items
+            </a>
+
             <a href="{{ url('/returns') }}"
                class="flex items-center gap-3 px-4 py-3 rounded-xl transition text-slate-600 hover:bg-white/60 hover:text-slate-900
                {{ request()->is('returns*') ? $active : '' }}">
                 <i class="ti ti-refresh text-lg"></i> Returns
-            </a>
-
-            <a href="{{ route('items.index') }}"
-               class="flex items-center gap-3 px-4 py-3 rounded-xl transition text-slate-600 hover:bg-white/60 hover:text-slate-900
-               {{ request()->is('items*') ? $active : '' }}">
-                <i class="ti ti-box text-lg"></i> Inventory
-            </a>
-
-            <a href="{{ url('/borrowers') }}"
-               class="flex items-center gap-3 px-4 py-3 rounded-xl transition text-slate-600 hover:bg-white/60 hover:text-slate-900
-               {{ request()->is('borrowers*') ? $active : '' }}">
-                <i class="ti ti-users text-lg"></i> Borrowers
             </a>
 
             <a href="{{ url('/reports') }}"
@@ -121,7 +123,6 @@
                         <h2 class="text-2xl font-bold text-brand-900 tracking-tight">
                             @yield('page-title')
                         </h2>
-                        <p class="text-xs text-slate-500 font-medium mt-0.5">Welcome back, Admin</p>
                     </div>
                 </div>
 

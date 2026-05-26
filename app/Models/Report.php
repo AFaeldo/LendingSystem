@@ -9,7 +9,21 @@ class Report extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['type','generated_by','generated_at','total_records','meta'];
+    protected $fillable = [
+        'type',
+        'generated_by',
+        'generated_at',
+        'total_records',
+        'meta',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'generated_at' => 'datetime',
+            'total_records' => 'integer',
+        ];
+    }
 
     public function generator()
     {

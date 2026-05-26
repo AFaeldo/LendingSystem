@@ -16,10 +16,13 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->integer('quantity')->default(0);
             $table->integer('available')->default(0);
-            $table->string('condition')->nullable();
-            $table->string('status')->default('available');
+            $table->enum('condition', ['Good', 'Fair', 'Poor', 'Damaged'])->nullable();
+            $table->enum('status', ['available', 'unavailable', 'damaged', 'retired'])->default('available');
             $table->string('image_path')->nullable();
             $table->timestamps();
+
+            $table->index('name');
+            $table->index('status');
         });
     }
 

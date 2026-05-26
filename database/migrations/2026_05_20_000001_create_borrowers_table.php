@@ -13,13 +13,17 @@ return new class extends Migration
             $table->string('firstname');
             $table->string('lastname');
             $table->string('middlename')->nullable();
-            $table->enum('gender', ['Male', 'Female', 'Other'])->nullable();
+            $table->enum('gender', ['Male', 'Female'])->nullable();
+            $table->integer('age')->nullable();
             $table->string('purok')->nullable();
             $table->text('address')->nullable();
-            $table->string('contact')->nullable();
+            $table->string('contact')->nullable()->unique();
             $table->string('organization')->nullable();
-            $table->string('status')->default('active');
+            $table->enum('status', ['active', 'inactive', 'suspended', 'archived'])->default('active');
             $table->timestamps();
+
+            $table->index('lastname');
+            $table->index('status');
         });
     }
 

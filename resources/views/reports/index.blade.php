@@ -11,7 +11,6 @@
     <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
             <h2 class="font-bold text-slate-800">Generated Reports</h2>
-            <p class="text-xs text-slate-500 mt-0.5">View and download structural operational data summaries</p>
         </div>
 
         <button class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 text-sm font-semibold text-slate-600 hover:text-emerald-600 transition px-3 py-2 sm:py-1.5 rounded-xl sm:rounded-lg bg-slate-50 sm:bg-transparent hover:bg-slate-100/70 cursor-pointer">

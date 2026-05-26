@@ -18,7 +18,7 @@ class BorrowerFactory extends Factory
             'firstname' => fake()->firstName(),
             'lastname' => fake()->lastName(),
             'middlename' => fake()->optional()->firstName(),
-            'gender' => fake()->randomElement(['Male','Female','Other']),
+            'gender' => fake()->randomElement(['Male','Female']),
             'purok' => 'Purok ' . fake()->numberBetween(1,10),
             'address' => fake()->address(),
             'contact' => fake()->phoneNumber(),

@@ -13,10 +13,13 @@ return new class extends Migration
             $table->foreignId('lending_transaction_id')->constrained('lending_transactions')->cascadeOnDelete();
             $table->integer('quantity')->default(1);
             $table->date('returned_at')->nullable();
-            $table->string('condition')->nullable();
+            $table->enum('condition', ['Good', 'Fair', 'Poor', 'Damaged'])->nullable();
             $table->text('remarks')->nullable();
             $table->foreignId('processed_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
+
+            $table->index('lending_transaction_id');
+            $table->index('returned_at');
         });
     }
 

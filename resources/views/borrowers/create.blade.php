@@ -6,12 +6,10 @@
 @section('content')
 
 <div class="max-w-2xl mx-auto">
-
     <x-card class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
 
         <div class="p-6 border-b border-slate-100">
             <h2 class="font-bold text-slate-800">Borrower Details</h2>
-            <p class="text-xs text-slate-500 mt-0.5">Register a new profile for tracking community item distribution</p>
         </div>
 
         <div class="p-6">
@@ -21,41 +19,43 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
                     <div>
-                        <x-form-input name="firstname" label="First Name" placeholder="e.g., John" />
+                        <x-form-input name="firstname" label="First Name" placeholder="e.g., John" value="{{ old('firstname') }}" />
+                        <x-field-error field="firstname" />
                     </div>
 
                     <div>
-                        <x-form-input name="lastname" label="Last Name" placeholder="e.g., Doe" />
+                        <x-form-input name="lastname" label="Last Name" placeholder="e.g., Doe" value="{{ old('lastname') }}" />
+                        <x-field-error field="lastname" />
                     </div>
 
                     <div>
-                        <x-form-input name="middlename" label="Middle Name" placeholder="e.g., Smith" />
+                        <x-form-input name="middlename" label="Middle Name" placeholder="e.g., Smith" value="{{ old('middlename') }}" />
+                        <x-field-error field="middlename" />
                     </div>
 
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-2">Gender</label>
-                        <select name="gender" class="w-full text-sm rounded-xl border-gray-200 focus:border-emerald-400 focus:ring focus:ring-emerald-100 text-slate-700 transition">
-                            <option value="">Select gender</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Other">Other</option>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Sex</label>
+                        <select name="gender" class="w-full text-sm rounded-xl border-gray-200 focus:border-emerald-400 focus:ring focus:ring-emerald-100 text-slate-700 transition {{ $errors->has('gender') ? 'border-red-500' : '' }}">
+                            <option value="">Select sex</option>
+                            <option value="Male" {{ old('gender') == 'Male' ? 'selected' : '' }}>Male</option>
+                            <option value="Female" {{ old('gender') == 'Female' ? 'selected' : '' }}>Female</option>
                         </select>
+                        <x-field-error field="gender" />
                     </div>
 
                     <div>
-                        <x-form-input name="purok" label="Purok / Sitio" placeholder="e.g., Purok 1" />
+                        <x-form-input type="number" name="age" label="Age" placeholder="e.g., 25" min="0" max="150" value="{{ old('age') }}" />
+                        <x-field-error field="age" />
                     </div>
 
                     <div>
-                        <x-form-input name="contact" label="Contact Number" placeholder="e.g., 09123456789" />
+                        <x-form-input name="purok" label="Purok / Sitio" placeholder="e.g., Purok 1" value="{{ old('purok') }}" />
+                        <x-field-error field="purok" />
                     </div>
 
                     <div class="md:col-span-2">
-                        <x-form-input name="organization" label="Organization / Affiliation" placeholder="e.g., Local Youth Council" />
-                    </div>
-
-                    <div class="md:col-span-2">
-                        <x-form-input name="address" label="Complete Address" placeholder="e.g., Street Name, Barangay, City" />
+                        <x-form-input name="contact" label="Contact Number" placeholder="e.g., 09123456789" value="{{ old('contact') }}" />
+                        <x-field-error field="contact" />
                     </div>
 
                 </div>
