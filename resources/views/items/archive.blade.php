@@ -41,14 +41,10 @@
                             <td class="px-6 py-4 text-center font-mono text-xs">{{ $item->quantity }}</td>
                             <td class="px-6 py-4 text-xs">{{ $item->condition ?? '-' }}</td>
                             <td class="px-6 py-4 text-right">
-                                {{-- RESTORE FROM ARCHIVE ACTION --}}
-                                <form action="{{ route('items.restore-item', $item) }}" method="POST" class="inline-block"
-                                    onsubmit="return confirm('Restore this item back to active inventory records?')">
+                                <form action="{{ route('items.restore-item', $item) }}" method="POST" class="inline-block" onsubmit="return confirm('Restore this item back to active inventory records?')">
                                     @csrf
                                     @method('PUT')
-                                    <button type="submit" class="text-sm font-semibold text-emerald-600 hover:text-emerald-700 cursor-pointer bg-transparent border-0 p-0">
-                                        Restore Item
-                                    </button>
+                                    <button type="submit" class="text-sm font-semibold text-emerald-600 hover:text-emerald-700 cursor-pointer bg-transparent border-0 p-0">Restore Item</button>
                                 </form>
                             </td>
                         </tr>

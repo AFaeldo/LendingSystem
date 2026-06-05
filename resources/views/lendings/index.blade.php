@@ -6,33 +6,37 @@
 @section('content')
 
     {{-- STATS --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
-            <p class="text-sm font-medium text-slate-500 mb-2">Active Lending</p>
-            <h2 class="text-4xl font-bold text-slate-900 tracking-tight">{{ $activeLendings ?? 0 }}</h2>
-            <p class="text-xs text-slate-400 mt-2">Currently borrowed</p>
-        </div>
-
-        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 border-l-4 border-red-500">
-            <p class="text-sm font-medium text-slate-500 mb-2">Overdue Items</p>
-            <h2 class="text-4xl font-bold text-slate-900 tracking-tight">{{ $overdueLendings ?? 0 }}</h2>
-            <p class="text-xs text-slate-400 mt-2">Needs immediate follow-up</p>
-        </div>
-
-        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 border-l-4 border-blue-500 sm:col-span-2 md:col-span-1">
-            <p class="text-sm font-medium text-slate-500 mb-2">Returned Today</p>
-            <h2 class="text-4xl font-bold text-slate-900 tracking-tight">{{ $returnedToday ?? 0 }}</h2>
-            <p class="text-xs text-slate-400 mt-2">Successfully returned</p>
-        </div>
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+    {{-- Active Lending Card --}}
+    <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+        <p class="text-sm font-medium text-slate-500 mb-2">Active Lending</p>
+        <h2 class="text-4xl font-bold text-slate-900 tracking-tight">
+            {{-- 🔥 FIX: Binibilang ang lahat ng lendings na ang status ay 'active' --}}
+            {{ $lendings->where('status', 'active')->count() }}
+        </h2>
+        <p class="text-xs text-slate-400 mt-2">Currently borrowed</p>
     </div>
 
-    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-end gap-4 mb-6">
-        <a href="{{ route('lendings.create') }}"
-            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2.5 rounded-xl font-semibold text-sm transition shadow-sm shrink-0">
-            <i class="ti ti-plus text-lg"></i>
-            New Lending
-        </a>
+    {{-- Overdue Items Card --}}
+    <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 border-l-4 border-red-500">
+        <p class="text-sm font-medium text-slate-500 mb-2">Overdue Items</p>
+        <h2 class="text-4xl font-bold text-slate-900 tracking-tight">
+            {{-- 🔥 FIX: Binibilang ang lahat ng lendings na ang status ay 'overdue' --}}
+            {{ $lendings->where('status', 'overdue')->count() }}
+        </h2>
+        <p class="text-xs text-slate-400 mt-2">Needs immediate follow-up</p>
     </div>
+
+    {{-- Returned Today Card --}}
+    <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 border-l-4 border-blue-500 sm:col-span-2 md:col-span-1">
+        <p class="text-sm font-medium text-slate-500 mb-2">Returned Today</p>
+        <h2 class="text-4xl font-bold text-slate-900 tracking-tight">
+            {{-- 🔥 FIX: Binibilang ang binalik ngayong araw gamit ang updated_at timestamp --}}
+            {{ $lendings->where('status', 'returned')->where('updated_at', '>=', now()->startOfDay())->count() }}
+        </h2>
+        <p class="text-xs text-slate-400 mt-2">Successfully returned</p>
+    </div>
+</div>
 
     {{-- FILTERS --}}
     <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 mb-6">
@@ -69,6 +73,16 @@
             </div>
         </div>
     </div>
+
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-end gap-4 mb-6">
+        <a href="{{ route('lendings.create') }}"
+            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2.5 rounded-xl font-semibold text-sm transition shadow-sm shrink-0">
+            <i class="ti ti-plus text-lg"></i>
+            New Lending
+        </a>
+    </div>
+
+
 
     {{-- TABLE --}}
     <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">

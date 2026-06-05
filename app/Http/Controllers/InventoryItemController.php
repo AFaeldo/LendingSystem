@@ -14,10 +14,10 @@ class InventoryItemController extends Controller
      */
     public function index(Request $request)
     {
-        // 🔥 FIX: Ginawang latest() o id DESC para ang pinakahuling idinagdag ay laging nasa unahan (No. 1)
+        // FIX: Inayos ang pagkakasunod-sunod (mula EQ-2026-001 pataas)
         $items = InventoryItem::with('category')
             ->where('status', '!=', 0)
-            ->latest('id')
+            ->orderBy('item_code', 'asc')
             ->paginate(15);
 
         return view('items.index', compact('items'));
@@ -28,10 +28,9 @@ class InventoryItemController extends Controller
      */
     public function archiveIndex()
     {
-        // 🔥 FIX: Ginawang pinakabago rin ang unahan para sa archives registry list
         $archivedItems = InventoryItem::with('category')
             ->where('status', 0)
-            ->latest('id')
+            ->orderBy('item_code', 'asc')
             ->get();
 
         return view('items.archive', compact('archivedItems'));
@@ -44,7 +43,6 @@ class InventoryItemController extends Controller
     {
         $categories = Category::orderBy('name')->get();
 
-        // Auto-calculate sequential pattern tracking structure (e.g., EQ-2026-001)
         $latestItem = InventoryItem::latest('id')->first();
         $nextId = $latestItem ? $latestItem->id + 1 : 1;
         $nextItemCode = 'EQ-' . date('Y') . '-' . str_pad($nextId, 3, '0', STR_PAD_LEFT);
@@ -57,7 +55,6 @@ class InventoryItemController extends Controller
      */
     public function store(Request $request)
     {
-        // 1. I-validate muna ang request inputs mula sa form
         $validatedData = $request->validate([
             'name' => 'required|string|max:255|min:2',
             'category_id' => 'nullable|exists:categories,id',
@@ -78,18 +75,17 @@ class InventoryItemController extends Controller
             'image.max' => 'Image size cannot exceed 2MB',
         ]);
 
-        // 🔥 FIX: Hahanapin kung may umiiral nang item na kapareho ang Pangalan at Kondisyon (at hindi naka-archive)
+        // FIX: Hanapin kung may active item na kapareho ang Name at Condition
         $existingItem = InventoryItem::where('name', $validatedData['name'])
             ->where('condition', $validatedData['condition'])
             ->where('status', '!=', 0)
             ->first();
 
         if ($existingItem) {
-            // KUNG MERON NANG KAPAREHO: I-add lang ang bagong quantity sa lumang data row
+            // I-increment lang ang quantity ng umiiral na record
             $existingItem->quantity += $validatedData['quantity'];
             $existingItem->available += $validatedData['quantity'];
 
-            // Kung may bagong larawang in-upload, palitan ang lumang file dependency
             if ($request->hasFile('image')) {
                 if ($existingItem->image_path && Storage::disk('public')->exists($existingItem->image_path)) {
                     Storage::disk('public')->delete($existingItem->image_path);
@@ -97,7 +93,6 @@ class InventoryItemController extends Controller
                 $existingItem->image_path = $request->file('image')->store('items', 'public');
             }
 
-            // Opsyonal: I-update ang kategorya o deskripsyon kung binago ito ng secretary
             if ($request->filled('category_id')) {
                 $existingItem->category_id = $validatedData['category_id'];
             }
@@ -106,16 +101,14 @@ class InventoryItemController extends Controller
             }
 
             $existingItem->save();
-
             return redirect()->route('items.index')->with('success', 'Item quantity updated successfully inside the existing record.');
         }
 
-        // KUNG WALA PANG KAPAREHO: Dito pa lang mag-ge-generate ng bagong sequential Item Code
+        // Kung walang duplicate, gumawa ng bagong row at bagong sequential item_code
         $latestItem = InventoryItem::latest('id')->first();
         $nextId = $latestItem ? $latestItem->id + 1 : 1;
         $generatedCode = 'EQ-' . date('Y') . '-' . str_pad($nextId, 3, '0', STR_PAD_LEFT);
 
-        // I-compile ang data array para sa bagong item row insertion entry
         $data = $validatedData;
         $data['item_code'] = $generatedCode;
         $data['available'] = $data['quantity'];
@@ -164,11 +157,9 @@ class InventoryItemController extends Controller
             'image.max' => 'Image size cannot exceed 2MB',
         ]);
 
-        // Dynamically adjust inventory stock calculations safely
         $lentCount = $item->quantity - $item->available;
         $data['available'] = $data['quantity'] - $lentCount;
 
-        // Clean up older image structures if a brand new file gets uploaded
         if ($request->hasFile('image')) {
             if ($item->image_path && Storage::disk('public')->exists($item->image_path)) {
                 Storage::disk('public')->delete($item->image_path);
@@ -180,32 +171,20 @@ class InventoryItemController extends Controller
         return redirect()->route('items.index')->with('success', 'Item updated successfully');
     }
 
-    /**
-     * Archive the specified inventory item record.
-     */
     public function archive(InventoryItem $item)
     {
-        // 0 = Archived Status Flag Value Context
         $item->update(['status' => 0]);
         return redirect()->route('items.index')->with('success', 'Item profile archived successfully');
     }
 
-    /**
-     * Restore an archived inventory record back to live registries.
-     */
     public function restore(InventoryItem $item)
     {
-        // 1 = Active Status Flag Value Context
         $item->update(['status' => 1]);
         return redirect()->route('items.archive')->with('success', 'Item restored to active inventory successfully');
     }
 
-    /**
-     * Remove the specified item from storage permanently.
-     */
     public function destroy(InventoryItem $item)
     {
-        // Clean up tracking file dependencies on storage disk before deletion
         if ($item->image_path && Storage::disk('public')->exists($item->image_path)) {
             Storage::disk('public')->delete($item->image_path);
         }

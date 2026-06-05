@@ -7,6 +7,12 @@
 
 <div class="max-w-2xl mx-auto">
 
+    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6">
+        <a href="{{ route('items.index') }}" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2.5 rounded-xl font-semibold text-sm transition shadow-sm shrink-0">
+            <i class="ti ti-arrow-left text-lg"></i>
+            Back to Record
+        </a>
+    </div>
     <x-card class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
 
         <div class="p-6 border-b border-slate-100">
@@ -20,27 +26,23 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
-                    {{-- ITEM CODE (AUTO-GENERATED STATE) --}}
                     <div>
                         <x-form-input name="item_code" label="Item Code" :value="$item->item_code" readonly class="bg-slate-50 text-slate-400 cursor-not-allowed" />
                     </div>
 
-                    {{-- TOTAL STOCK QUANTITY --}}
                     <div>
                         <x-form-input name="quantity" label="Quantity" type="number" :value="$item->quantity" />
                     </div>
 
-                    {{-- ITEM NAME --}}
                     <div class="md:col-span-2">
                         <x-form-input name="name" label="Item Name" :value="$item->name" />
                     </div>
 
-                    {{-- CATEGORY DIRECT SELECTOR --}}
                     <div class="md:col-span-2">
                         <label class="block text-sm font-semibold text-slate-700 mb-2">Category</label>
                         <select name="category_id" class="w-full text-sm rounded-xl border-gray-200 focus:border-emerald-400 focus:ring focus:ring-emerald-100 text-slate-700 transition">
                             <option value="">-- Select Category --</option>
-                            @foreach($categories as $cat)
+                            @foreach($categories as $category)
                                 <option value="{{ $cat->id }}" {{ $item->category_id == $cat->id ? 'selected' : '' }}>
                                     {{ $cat->name }}
                                 </option>
@@ -48,7 +50,6 @@
                         </select>
                     </div>
 
-                    {{-- ITEM CONDITION STATE SELECTOR --}}
                     <div class="md:col-span-2">
                         <label class="block text-sm font-semibold text-slate-700 mb-2">Item Condition</label>
                         <select name="condition" class="w-full text-sm rounded-xl border-gray-200 focus:border-emerald-400 focus:ring focus:ring-emerald-100 text-slate-700 transition">
@@ -62,7 +63,6 @@
 
                 </div>
 
-                {{-- FORM INTERACTIONS FOOTER --}}
                 <div class="flex items-center gap-3 pt-4 border-t border-slate-50">
                     <x-button type="submit" class="inline-flex items-center justify-center bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2.5 rounded-xl font-semibold text-sm transition shadow-sm cursor-pointer">
                         Save Changes

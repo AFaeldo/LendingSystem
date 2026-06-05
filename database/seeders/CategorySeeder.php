@@ -10,12 +10,12 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         $categories = [
-            ['name' => 'Furniture / Monobloc'], // Dito papasok ang upuan, mesa, atbp.
-            ['name' => 'Electronics / IT Equipment'], // Projector, Sound System, Extension Cord
-            ['name' => 'Office / Stationery Supplies'], // Stapler, Puncher
-            ['name' => 'Medical / Emergency Gear'], // Wheelchair, Stretcher, Oxygen Tank
-            ['name' => 'Events / Tents & Stages'], // Canopy, Folding tent
-            ['name' => 'Tools / Maintenance'], // Drills, Ladder, Lawn Mower
+            ['name' => 'Furniture'],
+            ['name' => 'Electronics / IT Equipment'],
+            ['name' => 'Office / Stationery Supplies'],
+            ['name' => 'Medical / Emergency Gear'],
+            ['name' => 'Events / Tents & Stages'],
+            ['name' => 'Tools / Maintenance'],
         ];
 
         foreach ($categories as $category) {

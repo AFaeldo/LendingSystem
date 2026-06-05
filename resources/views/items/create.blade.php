@@ -7,6 +7,13 @@
 
 <div class="max-w-2xl mx-auto">
 
+    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6">
+        <a href="{{ route('items.index') }}" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2.5 rounded-xl font-semibold text-sm transition shadow-sm shrink-0">
+            <i class="ti ti-arrow-left text-lg"></i>
+            Back to Record
+        </a>
+    </div>
+
     <x-success-alert />
     <x-error-alert />
 
@@ -21,56 +28,43 @@
                 @csrf
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-                    {{-- ITEM CODE (Auto-generated & Protected) --}}
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-2">Item Code</label>
                         <div class="relative">
-                            <input type="text" name="item_code" readonly
-                                class="w-full text-sm rounded-xl border-gray-200 bg-slate-50 text-slate-500 cursor-not-allowed font-mono px-4 py-2.5"
-                                value="{{ $nextItemCode ?? 'Auto-generating...' }}" />
-                            <span class="absolute right-3 top-2.5 text-xs font-semibold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">
-                                Auto
-                            </span>
+                            <input type="text" name="item_code" readonly class="w-full text-sm rounded-xl border-gray-200 bg-slate-50 text-slate-500 cursor-not-allowed font-mono px-4 py-2.5" value="{{ $nextItemCode ?? 'Auto-generating...' }}" />
+                            <span class="absolute right-3 top-2.5 text-xs font-semibold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">Auto</span>
                         </div>
                     </div>
 
-                    {{-- QUANTITY --}}
                     <div>
                         <x-form-input name="quantity" label="Quantity" type="number" placeholder="0" min="0" value="{{ old('quantity', 0) }}" />
                         <x-field-error field="quantity" />
                     </div>
 
-                    {{-- ITEM NAME --}}
                     <div class="md:col-span-2">
                         <x-form-input id="item_name" name="name" label="Item Name" placeholder="e.g., Extension Cord, Projector, Monobloc Chair" value="{{ old('name') }}" />
                         <x-field-error field="name" />
                     </div>
 
-                    {{-- CATEGORY --}}
                     <div class="md:col-span-2">
                         <div class="flex items-center justify-between mb-2">
                             <label class="text-sm font-semibold text-slate-700">Category</label>
-                            <button type="button" onclick="openCategoryModal()"
-                                class="inline-flex items-center gap-1 text-xs font-bold text-emerald-600 hover:text-emerald-700 transition cursor-pointer">
+                            <button type="button" onclick="openCategoryModal()" class="inline-flex items-center gap-1 text-xs font-bold text-emerald-600 hover:text-emerald-700 transition cursor-pointer">
                                 <i class="ti ti-plus"></i> Add New Category
                             </button>
                         </div>
                         <select id="category_select" name="category_id" class="w-full text-sm rounded-xl border-gray-200 focus:border-emerald-400 focus:ring focus:ring-emerald-100 text-slate-700 transition h-[42px] {{ $errors->has('category_id') ? 'border-red-500' : '' }}">
                             <option value="">-- Select Category --</option>
-                            @foreach($categories as $cat)
-                                <option value="{{ $cat->id }}" {{ old('category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                             @endforeach
                         </select>
 
-                        <p class="text-[11px] text-slate-400 mt-1.5 ml-1 leading-relaxed">
-                            💡 <span class="font-medium text-slate-500">Smart Tip:</span> Kung wala sa listahan, i-click ang Add New Category</span>.
-                        </p>
+                        <p class="text-[11px] text-slate-400 mt-1.5 ml-1 leading-relaxed">💡 <span class="font-medium text-slate-500">Smart Tip:</span> Kung wala sa listahan, i-click ang Add New Category.</p>
 
                         <x-field-error field="category_id" />
                     </div>
 
-                    {{-- ITEM CONDITION (🔥 In-update: "Good" at "Fair" na lang ang pagpipilian) --}}
                     <div class="md:col-span-2">
                         <label class="block text-sm font-semibold text-slate-700 mb-2">Item Condition</label>
                         <select name="condition" class="w-full text-sm rounded-xl border-gray-200 focus:border-emerald-400 focus:ring focus:ring-emerald-100 text-slate-700 transition h-[42px] {{ $errors->has('condition') ? 'border-red-500' : '' }}">
@@ -78,16 +72,11 @@
                             <option value="Good" {{ old('condition') == 'Good' ? 'selected' : '' }}>Good</option>
                             <option value="Fair" {{ old('condition') == 'Fair' ? 'selected' : '' }}>Fair</option>
                         </select>
-                        <p class="text-[11px] text-amber-600 mt-1.5 ml-1 font-medium">
-                        </p>
                         <x-field-error field="condition" />
                     </div>
 
-
-
                 </div>
 
-                {{-- FORM ACTIONS BUTTON CONTROLS --}}
                 <div class="flex items-center justify-end gap-3 pt-5 border-t border-slate-100">
                     <a href="{{ route('items.index') }}" class="inline-flex items-center justify-center bg-slate-100 hover:bg-slate-200 text-slate-700 px-5 py-2.5 rounded-xl font-semibold text-sm transition text-center min-w-[100px]">
                         Cancel
@@ -102,7 +91,6 @@
     </x-card>
 </div>
 
-{{-- MODAL FOR INLINE CATEGORY CREATION --}}
 <div id="categoryModal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center z-50 p-4 transition-opacity">
     <div class="bg-white rounded-2xl border border-slate-100 shadow-xl max-w-md w-full overflow-hidden transform scale-95 transition-transform duration-200">
         <div class="p-5 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
@@ -130,7 +118,6 @@
     </div>
 </div>
 
-{{-- INTERACTIVE MODAL HANDLING LOGIC --}}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const itemNameInput = document.getElementById('item_name');
@@ -143,7 +130,7 @@
 
                 let keywordGroup = "";
 
-                if (/chair|table|desk|monobloc|stool|whiteboard|bench|furniture/i.test(name)) {
+                if (/chair|table|desk|stool|whiteboard|bench|furniture/i.test(name)) {
                     keywordGroup = "furniture";
                 } else if (/cord|cable|projector|extension|charger|mouse|keyboard|monitor|hdmi|tv|speaker|sound|microphone|wire/i.test(name)) {
                     keywordGroup = "electronic";

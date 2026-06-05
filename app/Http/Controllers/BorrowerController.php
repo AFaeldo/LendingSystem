@@ -11,19 +11,21 @@ class BorrowerController extends Controller
     /**
      * Display a listing of active borrowers.
      */
-    public function index(Request $request)
-    {
-        // Exclude archived accounts from the active primary panel grid view
-        $query = Borrower::query()->where('status', '!=', 'archived');
+   public function index(Request $request)
+{
+    // Exclude archived accounts from the active primary panel grid view
+    $query = Borrower::query()->where('status', '!=', 'archived');
 
-        if ($request->filled('q')) {
-            $q = $request->q;
-            $query->where(fn($qb) => $qb->where('firstname', 'like', '%'.$q.'%')->orWhere('lastname', 'like', '%'.$q.'%'));
-        }
-
-        $borrowers = $query->orderBy('lastname')->paginate(15);
-        return view('borrowers.index', compact('borrowers'));
+    if ($request->filled('q')) {
+        $q = $request->q;
+        $query->where(fn($qb) => $qb->where('firstname', 'like', '%'.$q.'%')->orWhere('lastname', 'like', '%'.$q.'%'));
     }
+
+    // 🔥 FIX: Pinalitan ang 'lastname' ng 'id' at ginawang 'asc' para magsimula sa #1, #2, #3 pataas
+    $borrowers = $query->orderBy('id', 'asc')->paginate(15);
+
+    return view('borrowers.index', compact('borrowers'));
+}
 
     /**
      * Display a listing of archived borrowers.

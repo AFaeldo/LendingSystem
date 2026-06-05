@@ -6,25 +6,19 @@
 @section('content')
 
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-end gap-4 mb-6">
-
         <div class="flex items-center gap-2 w-full sm:w-auto">
-            {{-- VIEW ARCHIVE LINK BUTTON --}}
-            <a href="{{ route('items.archive') }}"
-                class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2.5 rounded-xl font-semibold text-sm transition shadow-sm shrink-0">
+            <a href="{{ route('items.archive') }}" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2.5 rounded-xl font-semibold text-sm transition shadow-sm shrink-0">
                 <i class="ti ti-archive text-lg text-slate-500"></i>
                 View Archives
             </a>
 
-            {{-- NEW ITEM BUTTON --}}
-            <a href="{{ route('items.create') }}"
-                class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2.5 rounded-xl font-semibold text-sm transition shadow-sm shrink-0 cursor-pointer">
+            <a href="{{ route('items.create') }}" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2.5 rounded-xl font-semibold text-sm transition shadow-sm shrink-0 cursor-pointer">
                 <i class="ti ti-plus text-lg"></i>
                 New Item
             </a>
         </div>
     </div>
 
-    {{-- MAIN CONTAINER INTERACTION HOOK --}}
     <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
 
         <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -33,7 +27,6 @@
             </div>
         </div>
 
-        {{-- DESKTOP VIEW COMPONENT --}}
         <div class="hidden md:block overflow-x-auto">
             <table class="w-full text-sm">
                 <thead class="bg-slate-50 border-b border-slate-100">
@@ -53,47 +46,29 @@
                 <tbody class="divide-y divide-slate-100">
                     @forelse($items as $item)
                         <tr class="hover:bg-gray-50/40 transition">
-                            {{-- 1. ITEM CODE --}}
-                            <td class="px-6 py-4 font-mono text-xs font-bold text-slate-500 whitespace-nowrap">
-                                {{ $item->item_code }}
-                            </td>
+                            <td class="px-6 py-4 font-mono text-xs font-bold text-slate-500 whitespace-nowrap">{{ $item->item_code }}</td>
 
-                            {{-- 2. NAME ONLY --}}
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-3">
                                     <div class="max-w-xs">
                                         <div class="font-semibold text-slate-800 truncate">{{ $item->name }}</div>
                                         @if ($item->description)
-                                            <div class="text-xs text-slate-400 truncate max-w-[200px]">
-                                                {{ $item->description }}</div>
+                                            <div class="text-xs text-slate-400 truncate max-w-[200px]">{{ $item->description }}</div>
                                         @endif
                                     </div>
                                 </div>
                             </td>
-                            {{-- 3. CATEGORY --}}
-                            <td class="px-6 py-4 text-slate-600 whitespace-nowrap">
-                                {{ optional($item->category)->name ?? '-' }}
-                            </td>
 
-                            {{-- 4. TOTAL QUANTITY --}}
-                            <td class="px-6 py-4 text-center font-mono font-medium text-slate-700 whitespace-nowrap">
-                                {{ $item->quantity }}
-                            </td>
+                            <td class="px-6 py-4 text-slate-600 whitespace-nowrap">{{ optional($item->category)->name ?? '-' }}</td>
 
-                            {{-- 5. AVAILABLE QUANTITY --}}
+                            <td class="px-6 py-4 text-center font-mono font-medium text-slate-700 whitespace-nowrap">{{ $item->quantity }}</td>
+
                             <td class="px-6 py-4 text-center whitespace-nowrap">
-                                <span
-                                    class="inline-block font-mono font-bold text-sm text-emerald-700 bg-emerald-50/60 px-2.5 py-1 rounded-lg border border-emerald-100/50">
-                                    {{ $item->available }}
-                                </span>
+                                <span class="inline-block font-mono font-bold text-sm text-emerald-700 bg-emerald-50/60 px-2.5 py-1 rounded-lg border border-emerald-100/50">{{ $item->available }}</span>
                             </td>
 
-                            {{-- 6. LENT QUANTITY --}}
-                            <td class="px-6 py-4 text-center font-mono text-slate-500 whitespace-nowrap">
-                                {{ $item->quantity - $item->available }}
-                            </td>
+                            <td class="px-6 py-4 text-center font-mono text-slate-500 whitespace-nowrap">{{ $item->quantity - $item->available }}</td>
 
-                            {{-- 7. CONDITION --}}
                             <td class="px-6 py-4 whitespace-nowrap text-slate-700">
                                 @if ($item->condition == 'Good')
                                     Good
@@ -108,53 +83,23 @@
                                 @endif
                             </td>
 
-                            {{-- 8. AVAILABILITY BADGE SYSTEM --}}
                             <td class="px-6 py-4 whitespace-nowrap">
                                 @if ($item->available > 0)
-                                    <span
-                                        class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-100">
-                                        In Stock
-                                    </span>
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-100">In Stock</span>
                                 @else
-                                    <span
-                                        class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-rose-50 text-rose-700 border border-rose-100">
-                                        All Lent Out
-                                    </span>
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-rose-50 text-rose-700 border border-rose-100">All Lent Out</span>
                                 @endif
                             </td>
 
-                            {{-- 9. ACTIONS ROW CONTROLS WITH ARCHIVE OPTION --}}
                             <td class="px-6 py-4 text-right whitespace-nowrap">
                                 <div class="inline-flex items-center justify-end gap-3.5">
-                                    {{-- EDIT --}}
-                                    <a href="{{ route('items.edit', $item) }}"
-                                        class="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition"
-                                        title="Edit Item">
-                                        Edit
-                                    </a>
+                                    <a href="{{ route('items.edit', $item) }}" class="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition" title="Edit Item">Edit</a>
 
-                                    {{-- ARCHIVE BUTTON --}}
-                                    <form action="{{ route('items.archive-item', $item) }}" method="POST"
-                                        class="inline-block"
-                                        onsubmit="return confirm('Archive this item? It can be retrieved later from your Archive records.')">
+                                    <form action="{{ route('items.archive-item', $item) }}" method="POST" class="inline-block" onsubmit="return confirm('Archive this item? It can be retrieved later from your Archive records.')">
                                         @csrf
                                         @method('PUT')
-                                        <button type="submit"
-                                            class="text-sm font-semibold text-amber-600 hover:text-amber-700 transition cursor-pointer bg-transparent border-0 p-0 inline-flex items-center gap-1"
-                                            title="Archive Item">
-                                            Archive
-                                        </button>
+                                        <button type="submit" class="text-sm font-semibold text-amber-600 hover:text-amber-700 transition cursor-pointer bg-transparent border-0 p-0 inline-flex items-center gap-1" title="Archive Item">Archive</button>
                                     </form>
-
-                                    {{-- DELETE
-                                    <form action="{{ route('items.destroy', $item) }}" method="POST" class="inline-block"
-                                        onsubmit="return confirm('Delete item permanently? This process cannot be undone.')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-sm font-semibold text-red-500 hover:text-red-600 transition cursor-pointer bg-transparent border-0 p-0">
-                                            Delete
-                                        </button>
-                                    </form> --}}
                                 </div>
                             </td>
                         </tr>
@@ -172,7 +117,7 @@
             </table>
         </div>
 
-        {{-- MOBILE VIEW COMPONENT --}}
+        <div class="block md:hidden divide-y divide-slate-100">
         <div class="block md:hidden divide-y divide-slate-100">
             @forelse($items as $item)
                 <div class="p-4 space-y-4">
@@ -242,7 +187,6 @@
                         </div>
                     @endif
 
-                    {{-- MOBILE INTERACTION ACTIONS --}}
                     <div class="flex flex-wrap items-center gap-2 pt-1">
                         <a href="{{ route('items.edit', $item) }}"
                             class="flex-1 inline-flex items-center justify-center bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 py-2 rounded-xl text-xs font-semibold transition">
