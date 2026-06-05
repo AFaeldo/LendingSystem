@@ -88,8 +88,8 @@
             <table class="w-full text-sm">
                 <thead class="bg-gray-50">
                     <tr class="text-left text-gray-500 text-xs font-semibold uppercase tracking-wider">
-                        <th class="px-6 py-4 w-16">ID #</th>
-                        <th class="px-6 py-4">Borrower</th>
+                        <th class="px-6 py-4 w-16">Trans ID</th>
+                        <th class="px-6 py-4">Borrower (Profile ID)</th>
                         <th class="px-6 py-4">Item</th>
                         <th class="px-6 py-4 text-center w-20">Qty</th>
                         <th class="px-6 py-4">Date Borrowed</th>
@@ -102,39 +102,34 @@
                 <tbody class="divide-y divide-slate-100">
                     @forelse($lendings as $lending)
                         <tr class="hover:bg-gray-50/50 transition">
-                            {{-- INAYOS NA CELL 1: ID NUMBER CELL TO MATCH THE HEADER ALIGNMENT --}}
                             <td class="px-6 py-4 text-slate-400 font-mono text-xs">
                                 #{{ $lending->id }}
                             </td>
 
-                            {{-- CELL 2: BORROWER NAME --}}
                             <td class="px-6 py-4 font-medium text-slate-800">
                                 {{ $lending->borrower->firstname }} {{ $lending->borrower->lastname }}
+                                <span class="text-xs font-mono text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded ml-1" title="Borrower Permanent ID">
+                                    #{{ $lending->borrower->id }}
+                                </span>
                             </td>
 
-                            {{-- CELL 3: ITEM NAME --}}
                             <td class="px-6 py-4 text-slate-600">{{ $lending->item->name }}</td>
 
-                            {{-- CELL 4: QUANTITY --}}
                             <td class="px-6 py-4 text-center text-slate-600 font-medium">{{ $lending->quantity }}</td>
 
-                            {{-- CELL 5: DATE BORROWED --}}
                             <td class="px-6 py-4 text-slate-600">{{ optional($lending->borrowed_at)->format('M d, Y') }}</td>
 
-                            {{-- CELL 6: DUE DATE --}}
                             <td class="px-6 py-4 text-slate-600">{{ optional($lending->due_at)->format('M d, Y') }}</td>
 
-                            {{-- CELL 7: STATUS --}}
                             <td class="px-6 py-4">
                                 <span class="px-2.5 py-1 text-xs font-medium rounded-full border
                                 {{ $lending->status === 'overdue' ? 'bg-red-50 border-red-100 text-red-700' : '' }}
                                 {{ $lending->status === 'returned' ? 'bg-green-50 border-green-100 text-green-700' : '' }}
-                                {{ $lending->status === 'active' ? 'bg-brand-50 border-brand-100 text-brand-700' : '' }}">
+                                {{ $lending->status === 'active' ? 'bg-emerald-50 border-emerald-100 text-emerald-700' : '' }}">
                                     {{ ucfirst($lending->status) }}
                                 </span>
                             </td>
 
-                            {{-- CELL 8: ACTIONS --}}
                             <td class="px-6 py-4 text-right">
                                 <a href="{{ route('lendings.show', $lending) }}"
                                     class="inline-flex items-center gap-1 font-semibold text-emerald-600 hover:text-emerald-700 transition">
@@ -144,7 +139,6 @@
                         </tr>
                     @empty
                         <tr>
-                            {{-- INAYOS DING COLSPAN UPANG MAG-FIT SA WALONG HALIGI NG SCREEN --}}
                             <td colspan="8" class="px-6 py-16 text-center text-gray-400">
                                 <div class="flex flex-col items-center justify-center space-y-2">
                                     <i class="ti ti-folder-off text-4xl text-gray-300"></i>
@@ -157,7 +151,7 @@
             </table>
         </div>
 
-        {{-- MOBILE VIEW LAYOUT BLOCK --}}
+        {{-- MOBILE VIEW --}}
         <div class="block md:hidden divide-y divide-slate-100">
             @forelse($lendings as $lending)
                 <div class="p-4 space-y-3.5">
@@ -165,6 +159,9 @@
                         <div>
                             <h3 class="font-bold text-slate-800 text-sm leading-tight">
                                 {{ $lending->borrower->firstname }} {{ $lending->borrower->lastname }}
+                                <span class="text-xs font-mono text-slate-400 bg-slate-100 px-1 py-0.5 rounded ml-0.5">
+                                    #{{ $lending->borrower->id }}
+                                </span>
                             </h3>
                             <p class="text-xs text-slate-600 mt-1">
                                 <span class="text-slate-400 font-medium">Item:</span> {{ $lending->item->name }}
@@ -174,7 +171,7 @@
                         <span class="px-2.5 py-0.5 text-xs font-medium rounded-full border shrink-0
                         {{ $lending->status === 'overdue' ? 'bg-red-50 border-red-100 text-red-700' : '' }}
                         {{ $lending->status === 'returned' ? 'bg-green-50 border-green-100 text-green-700' : '' }}
-                        {{ $lending->status === 'active' ? 'bg-brand-50 border-brand-100 text-brand-700' : '' }}">
+                        {{ $lending->status === 'active' ? 'bg-emerald-50 border-emerald-100 text-emerald-700' : '' }}">
                             {{ ucfirst($lending->status) }}
                         </span>
                     </div>

@@ -19,7 +19,9 @@ class LendingController extends Controller
 
     public function create()
     {
-        $borrowers = Borrower::orderBy('lastname')->get();
+        // SOLUSYON: Tanging ang mga may 'active' status lamang ang pwedeng lumabas sa pagpipilian
+        $borrowers = Borrower::where('status', 'active')->orderBy('lastname')->get();
+
         // Siguraduhing may stock pa ang mga ipapakitang gamit sa dropdown selection list
         $items = InventoryItem::where('available', '>', 0)->orderBy('name')->get();
         return view('lendings.create', compact('borrowers','items'));
@@ -27,7 +29,6 @@ class LendingController extends Controller
 
     public function store(Request $request)
     {
-        // Tinanggal ang due_at sa user input validation para hindi ito ma-manipula ng user
         $data = $request->validate([
             'borrower_id' => 'required|exists:borrowers,id',
             'inventory_item_id' => 'required|exists:inventory_items,id',
@@ -42,6 +43,12 @@ class LendingController extends Controller
             'quantity.min' => 'Quantity must be at least 1',
             'quantity.max' => 'Quantity cannot exceed 1000',
         ]);
+
+        // SOLUSYON: Backend Security Check kung Active ang Borrower status
+        $borrower = Borrower::findOrFail($data['borrower_id']);
+        if (strtolower($borrower->status) !== 'active') {
+            return back()->withErrors(['borrower_id' => 'This borrower is currently inactive/suspended and cannot borrow items.'])->withInput();
+        }
 
         $item = InventoryItem::findOrFail($data['inventory_item_id']);
 
@@ -64,11 +71,11 @@ class LendingController extends Controller
             return back()->withErrors(['inventory_item_id' => 'This borrower already has an active lending record for this item'])->withInput();
         }
 
-        // BUKAS NA PAG-PROCESO: Auto-calculation ng Oras at 7-Araw na palugit
+        // Auto-calculation ng Oras at 7-Araw na palugit
         $today = Carbon::now();
 
-        $data['borrowed_at'] = $today->toDateString(); // Kung kailan pinroseso ngayon
-        $data['due_at']      = $today->addDays(7)->toDateString(); // Auto-set sa eksaktong 7 araw na palugit
+        $data['borrowed_at'] = $today->toDateString();
+        $data['due_at']      = $today->addDays(7)->toDateString();
         $data['status']      = 'active';
         $data['processed_by'] = Auth::id();
 

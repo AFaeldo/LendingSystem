@@ -83,8 +83,12 @@
                                 {{ $b->contact ?? '-' }}
                             </td>
 
+                            {{-- UPDATED DYNAMIC STATUS BADGE (DESKTOP) --}}
                             <td class="px-6 py-4">
-                                <span class="px-2.5 py-1 text-xs font-medium rounded-full border {{ ($b->status ?? 'active') === 'active' ? 'bg-emerald-50 border-emerald-100 text-emerald-700' : 'bg-slate-100 border-slate-200 text-slate-600' }}">
+                                <span class="px-2.5 py-1 text-xs font-semibold rounded-full border
+                                    {{ strtolower($b->status ?? 'active') === 'active' ? 'bg-emerald-50 border-emerald-100 text-emerald-700' : '' }}
+                                    {{ strtolower($b->status) === 'inactive' ? 'bg-amber-50 border-amber-100 text-amber-700' : '' }}
+                                    {{ strtolower($b->status) === 'suspended' || strtolower($b->status) === 'banned' ? 'bg-red-50 border-red-100 text-red-700' : '' }}">
                                     {{ ucfirst($b->status ?? 'Active') }}
                                 </span>
                             </td>
@@ -136,7 +140,11 @@
                             </h3>
                         </div>
 
-                        <span class="px-2.5 py-0.5 text-xs font-medium rounded-full border shrink-0 {{ ($b->status ?? 'active') === 'active' ? 'bg-emerald-50 border-emerald-100 text-emerald-700' : 'bg-slate-100 border-slate-200 text-slate-600' }}">
+                        {{-- UPDATED DYNAMIC STATUS BADGE (MOBILE) --}}
+                        <span class="px-2.5 py-0.5 text-xs font-medium rounded-full border shrink-0
+                            {{ strtolower($b->status ?? 'active') === 'active' ? 'bg-emerald-50 border-emerald-100 text-emerald-700' : '' }}
+                            {{ strtolower($b->status) === 'inactive' ? 'bg-amber-50 border-amber-100 text-amber-700' : '' }}
+                            {{ strtolower($b->status) === 'suspended' || strtolower($b->status) === 'banned' ? 'bg-red-50 border-red-100 text-red-700' : '' }}">
                             {{ ucfirst($b->status ?? 'Active') }}
                         </span>
                     </div>

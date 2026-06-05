@@ -33,7 +33,6 @@
                                 Auto
                             </span>
                         </div>
-                        <p class="text-[11px] text-gray-400 mt-1 ml-1">Generated automatically by the tracking lifecycle system.</p>
                     </div>
 
                     {{-- QUANTITY --}}
@@ -44,11 +43,11 @@
 
                     {{-- ITEM NAME --}}
                     <div class="md:col-span-2">
-                        <x-form-input name="name" label="Item Name" placeholder="e.g., Extension Cord, Projector" value="{{ old('name') }}" />
+                        <x-form-input id="item_name" name="name" label="Item Name" placeholder="e.g., Extension Cord, Projector, Monobloc Chair" value="{{ old('name') }}" />
                         <x-field-error field="name" />
                     </div>
 
-                    {{-- CATEGORY (With Add New Button inline) --}}
+                    {{-- CATEGORY --}}
                     <div class="md:col-span-2">
                         <div class="flex items-center justify-between mb-2">
                             <label class="text-sm font-semibold text-slate-700">Category</label>
@@ -63,28 +62,28 @@
                                 <option value="{{ $cat->id }}" {{ old('category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
                             @endforeach
                         </select>
+
+                        <p class="text-[11px] text-slate-400 mt-1.5 ml-1 leading-relaxed">
+                            💡 <span class="font-medium text-slate-500">Smart Tip:</span> Kung wala sa listahan, i-click ang Add New Category</span>.
+                        </p>
+
                         <x-field-error field="category_id" />
                     </div>
 
-                    {{-- ITEM CONDITION --}}
+                    {{-- ITEM CONDITION (🔥 In-update: "Good" at "Fair" na lang ang pagpipilian) --}}
                     <div class="md:col-span-2">
                         <label class="block text-sm font-semibold text-slate-700 mb-2">Item Condition</label>
                         <select name="condition" class="w-full text-sm rounded-xl border-gray-200 focus:border-emerald-400 focus:ring focus:ring-emerald-100 text-slate-700 transition h-[42px] {{ $errors->has('condition') ? 'border-red-500' : '' }}">
                             <option value="">-- Select Condition --</option>
-                            <option value="Good" {{ old('condition') == 'Good' ? 'selected' : '' }}>✨ Good</option>
-                            <option value="Fair" {{ old('condition') == 'Fair' ? 'selected' : '' }}>👍 Fair</option>
-                            <option value="Poor" {{ old('condition') == 'Poor' ? 'selected' : '' }}>⚠️ Poor</option>
-                            <option value="Damaged" {{ old('condition') == 'Damaged' ? 'selected' : '' }}>❌ Damaged</option>
+                            <option value="Good" {{ old('condition') == 'Good' ? 'selected' : '' }}>Good</option>
+                            <option value="Fair" {{ old('condition') == 'Fair' ? 'selected' : '' }}>Fair</option>
                         </select>
+                        <p class="text-[11px] text-amber-600 mt-1.5 ml-1 font-medium">
+                        </p>
                         <x-field-error field="condition" />
                     </div>
 
-                    {{-- DESCRIPTION --}}
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-semibold text-slate-700 mb-2">Description</label>
-                        <textarea name="description" class="w-full text-sm rounded-xl border-gray-200 focus:border-emerald-400 focus:ring focus:ring-emerald-100 text-slate-700 transition p-3 {{ $errors->has('description') ? 'border-red-500' : '' }}" rows="4" placeholder="Provide extra physical characteristics or tracking notes here...">{{ old('description') }}</textarea>
-                        <x-field-error field="description" />
-                    </div>
+
 
                 </div>
 
@@ -133,6 +132,44 @@
 
 {{-- INTERACTIVE MODAL HANDLING LOGIC --}}
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const itemNameInput = document.getElementById('item_name');
+        const categorySelect = document.getElementById('category_select');
+
+        if (itemNameInput && categorySelect) {
+            itemNameInput.addEventListener('input', function() {
+                const name = this.value.toLowerCase().trim();
+                if (!name) return;
+
+                let keywordGroup = "";
+
+                if (/chair|table|desk|monobloc|stool|whiteboard|bench|furniture/i.test(name)) {
+                    keywordGroup = "furniture";
+                } else if (/cord|cable|projector|extension|charger|mouse|keyboard|monitor|hdmi|tv|speaker|sound|microphone|wire/i.test(name)) {
+                    keywordGroup = "electronic";
+                } else if (/hammer|screwdriver|drill|pliers|wrench|tape|saw|ladder|mower/i.test(name)) {
+                    keywordGroup = "tool";
+                } else if (/pen|paper|notebook|pencil|stapler|marker|folder/i.test(name)) {
+                    keywordGroup = "stationery";
+                } else if (/tent|canopy|tolda|stage|lights|sound system/i.test(name)) {
+                    keywordGroup = "event";
+                } else if (/wheelchair|stretcher|oxygen|first aid|bp/i.test(name)) {
+                    keywordGroup = "medical";
+                }
+
+                if (keywordGroup !== "") {
+                    for (let i = 0; i < categorySelect.options.length; i++) {
+                        const optionText = categorySelect.options[i].text.toLowerCase();
+                        if (optionText.includes(keywordGroup)) {
+                            categorySelect.selectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+            });
+        }
+    });
+
     function openCategoryModal() {
         document.getElementById('categoryModal').classList.remove('hidden');
         document.getElementById('new_category_name').focus();
@@ -155,7 +192,6 @@
             return;
         }
 
-        // Fixed: pointing directly to the relative standard URL pattern
         fetch("/categories", {
             method: 'POST',
             headers: {
@@ -167,7 +203,6 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Append and select the newly created category option element
                 const select = document.getElementById('category_select');
                 const newOption = new Option(data.category.name, data.category.id, true, true);
                 select.add(newOption);

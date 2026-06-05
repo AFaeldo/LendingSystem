@@ -16,7 +16,7 @@ use App\Http\Controllers\CategoryController; // Naka-import na ng tama rito
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', fn () => redirect('/login'));
+Route::get('/', fn() => redirect('/login'));
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'loginPage'])->name('login');
@@ -61,12 +61,19 @@ Route::middleware('auth')->group(function () {
 
 
     /*
-    |--------------------------------------------------------------------------
-    | RETURNS MODULE
-    |--------------------------------------------------------------------------
-    */
-    Route::resource('returns', ReturnController::class)->only(['index','create','store','show']);
+     |--------------------------------------------------------------------------
+     | RETURNS MODULE
+     |--------------------------------------------------------------------------
+     |
+     */
+    Route::get('/returns/export', [ReturnController::class, 'export'])->name('returns.export');
 
+    Route::resource('returns', ReturnController::class)->only([
+        'index',
+        'create',
+        'store',
+        'show'
+    ]);
 
     /*
     |--------------------------------------------------------------------------
@@ -99,7 +106,8 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     | REPORTS MODULE
     |--------------------------------------------------------------------------
+    |
     */
-    Route::resource('reports', ReportController::class)->only(['index','show']);
+    Route::resource('reports', ReportController::class)->only(['index', 'show', 'store']);
 
 });

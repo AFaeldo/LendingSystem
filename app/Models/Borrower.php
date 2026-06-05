@@ -22,6 +22,14 @@ class Borrower extends Model
         'status',
     ];
 
+    /**
+     * Ang mga default na halaga para sa mga attributes ng modelo.
+     * Siguradong 'active' ang simula ng bawat bagong borrower.
+     */
+    protected $attributes = [
+        'status' => 'active',
+    ];
+
     protected function casts(): array
     {
         return [
@@ -29,8 +37,12 @@ class Borrower extends Model
         ];
     }
 
+    /**
+     * Relationship sa LendingTransaction Model.
+     * Hinahayaan ka nitong makuha ang kasaysayan (history) ng hiram ng borrower.
+     */
     public function lendings()
     {
-        return $this->hasMany(LendingTransaction::class);
+        return $this->hasMany(LendingTransaction::class, 'borrower_id');
     }
 }

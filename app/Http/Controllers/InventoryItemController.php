@@ -14,10 +14,10 @@ class InventoryItemController extends Controller
      */
     public function index(Request $request)
     {
-        // Tinatanggal ang mga archived items (0) sa pangunahing listahan
+        // 🔥 FIX: Ginawang latest() o id DESC para ang pinakahuling idinagdag ay laging nasa unahan (No. 1)
         $items = InventoryItem::with('category')
             ->where('status', '!=', 0)
-            ->orderBy('name')
+            ->latest('id')
             ->paginate(15);
 
         return view('items.index', compact('items'));
@@ -28,10 +28,10 @@ class InventoryItemController extends Controller
      */
     public function archiveIndex()
     {
-        // Kinukuha lamang ang mga marked archived values (0) mula sa vault scope
+        // 🔥 FIX: Ginawang pinakabago rin ang unahan para sa archives registry list
         $archivedItems = InventoryItem::with('category')
             ->where('status', 0)
-            ->orderBy('name')
+            ->latest('id')
             ->get();
 
         return view('items.archive', compact('archivedItems'));
@@ -57,38 +57,68 @@ class InventoryItemController extends Controller
      */
     public function store(Request $request)
     {
-        // Force server-side generation to prevent user bypass or tampering with readonly input
-        $latestItem = InventoryItem::latest('id')->first();
-        $nextId = $latestItem ? $latestItem->id + 1 : 1;
-        $generatedCode = 'EQ-' . date('Y') . '-' . str_pad($nextId, 3, '0', STR_PAD_LEFT);
-
-        $request->merge(['item_code' => $generatedCode]);
-
-        $data = $request->validate([
-            'item_code' => 'required|string|unique:inventory_items,item_code|max:100|regex:/^[A-Z0-9\-]+$/',
+        // 1. I-validate muna ang request inputs mula sa form
+        $validatedData = $request->validate([
             'name' => 'required|string|max:255|min:2',
             'category_id' => 'nullable|exists:categories,id',
             'description' => 'nullable|string|max:1000',
             'quantity' => 'required|integer|min:0|max:100000',
-            'condition' => 'nullable|in:Good,Fair,Poor,Damaged',
+            'condition' => 'required|string|in:Good,Fair',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ], [
-            'item_code.required' => 'Item code is required',
-            'item_code.unique' => 'This item code already exists',
-            'item_code.regex' => 'Item code must contain only uppercase letters, numbers, and hyphens',
             'name.required' => 'Item name is required',
             'name.min' => 'Item name must be at least 2 characters',
             'quantity.required' => 'Quantity is required',
             'quantity.integer' => 'Quantity must be a whole number',
             'quantity.min' => 'Quantity cannot be negative',
             'quantity.max' => 'Quantity cannot exceed 100,000',
+            'condition.required' => 'Item condition is required',
+            'condition.in' => 'Hindi pwedeng magpasok ng sirang gamit (Poor/Damaged) sa bagong imbentaryo.',
             'image.image' => 'The file must be an image',
             'image.max' => 'Image size cannot exceed 2MB',
         ]);
 
-        $data['available'] = $data['quantity'];
+        // 🔥 FIX: Hahanapin kung may umiiral nang item na kapareho ang Pangalan at Kondisyon (at hindi naka-archive)
+        $existingItem = InventoryItem::where('name', $validatedData['name'])
+            ->where('condition', $validatedData['condition'])
+            ->where('status', '!=', 0)
+            ->first();
 
-        // RESOLUTION: Ginawang integer structure tracking identifier flag (1 = Active)
+        if ($existingItem) {
+            // KUNG MERON NANG KAPAREHO: I-add lang ang bagong quantity sa lumang data row
+            $existingItem->quantity += $validatedData['quantity'];
+            $existingItem->available += $validatedData['quantity'];
+
+            // Kung may bagong larawang in-upload, palitan ang lumang file dependency
+            if ($request->hasFile('image')) {
+                if ($existingItem->image_path && Storage::disk('public')->exists($existingItem->image_path)) {
+                    Storage::disk('public')->delete($existingItem->image_path);
+                }
+                $existingItem->image_path = $request->file('image')->store('items', 'public');
+            }
+
+            // Opsyonal: I-update ang kategorya o deskripsyon kung binago ito ng secretary
+            if ($request->filled('category_id')) {
+                $existingItem->category_id = $validatedData['category_id'];
+            }
+            if ($request->filled('description')) {
+                $existingItem->description = $validatedData['description'];
+            }
+
+            $existingItem->save();
+
+            return redirect()->route('items.index')->with('success', 'Item quantity updated successfully inside the existing record.');
+        }
+
+        // KUNG WALA PANG KAPAREHO: Dito pa lang mag-ge-generate ng bagong sequential Item Code
+        $latestItem = InventoryItem::latest('id')->first();
+        $nextId = $latestItem ? $latestItem->id + 1 : 1;
+        $generatedCode = 'EQ-' . date('Y') . '-' . str_pad($nextId, 3, '0', STR_PAD_LEFT);
+
+        // I-compile ang data array para sa bagong item row insertion entry
+        $data = $validatedData;
+        $data['item_code'] = $generatedCode;
+        $data['available'] = $data['quantity'];
         $data['status'] = 1;
 
         if ($request->hasFile('image')) {
@@ -119,7 +149,7 @@ class InventoryItemController extends Controller
             'category_id' => 'nullable|exists:categories,id',
             'description' => 'nullable|string|max:1000',
             'quantity' => 'required|integer|min:0|max:100000',
-            'condition' => 'nullable|in:Good,Fair,Poor,Damaged',
+            'condition' => 'required|string|in:Good,Fair',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ], [
             'name.required' => 'Item name is required',
@@ -128,6 +158,8 @@ class InventoryItemController extends Controller
             'quantity.integer' => 'Quantity must be a whole number',
             'quantity.min' => 'Quantity cannot be negative',
             'quantity.max' => 'Quantity cannot exceed 100,000',
+            'condition.required' => 'Item condition is required',
+            'condition.in' => 'Maaari lamang i-update ang kondisyon bilang Good o Fair.',
             'image.image' => 'The file must be an image',
             'image.max' => 'Image size cannot exceed 2MB',
         ]);

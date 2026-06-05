@@ -25,7 +25,7 @@
                             <option value="">Select borrower</option>
                             @foreach($borrowers as $borrower)
                                 <option value="{{ $borrower->id }}" {{ old('borrower_id') == $borrower->id ? 'selected' : '' }}>
-                                    {{ $borrower->lastname }}, {{ $borrower->firstname }} — (€{{ $borrower->purok }})
+                                    {{ $borrower->lastname }}, {{ $borrower->firstname }} — (Purok: {{ $borrower->purok ?? 'N/A' }})
                                 </option>
                             @endforeach
                         </select>
@@ -56,7 +56,7 @@
                         @enderror
                     </div>
 
-                    {{-- SYSTEM NOTICE: IPINALIT SA DUE DATE INPUT FIELD --}}
+                    {{-- SYSTEM NOTICE: AUTOMATED DUE DATE INFO --}}
                     <div class="md:col-span-2">
                         <div class="bg-blue-50 border border-blue-100 text-blue-800 p-4 rounded-xl flex items-start gap-3">
                             <div class="text-blue-500 mt-0.5">

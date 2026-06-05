@@ -61,6 +61,7 @@ class BorrowerController extends Controller
             'address' => 'nullable|string|max:500',
             'contact' => 'nullable|string|max:50|unique:borrowers,contact|regex:/^[0-9\s\-\+\(\)]*$/',
             'organization' => 'nullable|string|max:255',
+            'status' => 'nullable|string|in:active,inactive,suspended,banned', // Dinagdag para sa form flexibility
         ], [
             'firstname.required' => 'First name is required',
             'firstname.min' => 'First name must be at least 2 characters',
@@ -78,7 +79,10 @@ class BorrowerController extends Controller
             'contact.regex' => 'Contact number format is invalid',
         ]);
 
-        $data['status'] = 'active';
+        // Kung walang ipinasang status sa pag-create, automatic 'active'
+        if (empty($data['status'])) {
+            $data['status'] = 'active';
+        }
 
         Borrower::create($data);
         return redirect()->route('borrowers.index')->with('success', 'Borrower created successfully');
@@ -107,6 +111,7 @@ class BorrowerController extends Controller
             'address' => 'nullable|string|max:500',
             'contact' => 'nullable|string|max:50|unique:borrowers,contact,' . $borrower->id . '|regex:/^[0-9\s\-\+\(\)]*$/',
             'organization' => 'nullable|string|max:255',
+            'status' => 'required|string|in:active,inactive,suspended,banned', // <--- DITO ANG KULANG! Dinagdag ang validation rule
         ], [
             'firstname.required' => 'First name is required',
             'firstname.min' => 'First name must be at least 2 characters',
